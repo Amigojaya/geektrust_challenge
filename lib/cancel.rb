@@ -1,8 +1,8 @@
 class Cancel
-  def initialize(user_input, course_offerings)
+  def initialize(user_input, registrations)
     @error = CourseErrorHelper.new
     @splitted_input = user_input
-    @course_offerings = course_offerings
+    @registrations = registrations
   end
 
   def call
@@ -11,23 +11,20 @@ class Cancel
 
   private
 
-  attr_reader :splitted_input, :course_offerings, :error
+  attr_reader :splitted_input, :registrations, :error
 
-  def is_course_valid?(course_id)
-    course_offerings.select { |course| course[:course_id] == course_id }.first
+  def cancel_registration?(registration_id)
+    registrations.select { |registration| registration[:registration_id] == registration_id }.first
   end
 
   def cancel
     return error.data_error unless splitted_input.count == 2
 
-    course_id = splitted_input[1]
-    searched_course = is_course_valid?(course_id)
+    registration_id = splitted_input[1]
+    searched_registration = cancel_registration?(registration_id)
 
-    return error.course_not_found_error if searched_course.nil?
-    return puts 'CANCEL_REJECTED' if searched_course[:is_alloted]
+    searched_registration[:is_canceled] = true
 
-    searched_course[:is_cancelled] = true
-
-    puts "#{course_id} CANCEL_ACCEPTED"
+    puts "#{registration_id} CANCEL_ACCEPTED"
   end
 end

@@ -43,17 +43,18 @@ class Register
     email = registration[1]
     course_id = registration[2]
     searched_course = is_course_valid?(course_id)
-
+    
     return error.data_error unless is_email_valid?(email)
     return error.data_error if searched_course.nil?
-    return error.course_already_canceled_error if searched_course[:is_cancelled]
+    return error.course_already_canceled_error if searched_course[:is_canceled]
     return error.already_exists('user') if is_user_already_exists(email, course_id)
     return error.course_full_error if course_has_limit(searched_course)
 
     {
       email: email,
       course_id: course_id,
-      registration_id: registration_id(email, searched_course[:title])
+      registration_id: registration_id(email, searched_course[:title]),
+      is_canceled: false
     }
   end
 

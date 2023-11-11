@@ -24,7 +24,7 @@ class Course
       max_employees: course_offering[5].to_i,
       course_id: course_id(course_offering),
       is_alloted: false,
-      is_cancelled: false
+      is_canceled: false
     }
   end
 
